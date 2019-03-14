@@ -1,6 +1,6 @@
 Package: climate4R.value
 Depends:
-    R (>= 3.4.0),
+    R (>= 3.5.0),
     VALUE (>= 1.4.23),
     transformeR (>= 1.4.7)
 Imports:
@@ -13,7 +13,7 @@ Suggests:
 Type: Package
 Title: An R package for geoprocessing climate4R data 
 Version: 0.0.0
-Date: 2018-08-15
+Date: 2019-03-14
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Joaquin Bedia <bediaj@unican.es> [aut]",
