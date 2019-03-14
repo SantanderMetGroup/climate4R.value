@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: climate4R.value\nDepends:\n    R (>= 3.4.0),\n    VALUE (>= 1.4.23),\n    transformeR (>= 1.4.7)\nImports:\n    abind\nSuggests:\n    downscaleR,      \n    loadeR,\n    loadeR.ECOMS,\n    visualizeR\nType: Package\nTitle: An R package for geoprocessing climate4R data \nVersion: 0.0.0\nDate: 2018-08-15\nAuthors@R: as.person(c(\n    \"Santander Meteorology Group <http://meteo.unican.es> [cph]\",\n    \"Joaquin Bedia <bediaj@unican.es> [aut]\",\n    \"Maialen Iturbide <miturbide@ifca.unican.es> [aut, cre]\"))\nBugReports: https://github.com/SantanderMetGroup/geoprocesseR/issues\nURL: in construction\nEncoding: UTF-8\nDescription: Wrapper of package VALUE to compute several indices and\n    perform climate data validation using the tools developed in the COST\n    action VALUE.\nLicense: file LICENSE\nLazyData: true\nRoxygenNote: 6.1.1\n",
+    "created" : 1552561103312.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "825229583",
+    "id" : "C73B85E5",
+    "lastKnownWriteTime" : 1551271229,
+    "last_content_update" : 1551271229,
+    "path" : "/media/maialen/work/WORK/GIT/climate4R.value/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}

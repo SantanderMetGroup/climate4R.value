@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' @title Bias\n#' @description Function to compute the difference between the observed and predicted means. \n#' The measure depends on the index mean.\n#' @author J. Bedia, D. San-Mart\\'in, S. Herrera\n#' @template templateMeasureParams\n#' @param dates dates\n#' @return A float number corresponding to the bias.\n#' @export\n\nmeasure.bias <- function(indexObs = NULL, indexPrd = NULL, obs = NULL, prd = NULL, dates) {\n    indexPrd - indexObs\n}\n",
+    "created" : 1551194875758.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3629838136",
+    "id" : "486AC123",
+    "lastKnownWriteTime" : 1551194018,
+    "last_content_update" : 1551194018,
+    "path" : "/media/maialen/work/WORK/GIT/VALUE/R/measure.bias.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
