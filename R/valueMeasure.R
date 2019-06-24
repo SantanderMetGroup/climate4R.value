@@ -22,6 +22,14 @@
 #' @param measure.code characher of the measure code to be computed (use VALUE::show.measures)
 #' @param index.code Default is NULL. characher of the index code to be computed (use VALUE::show.indices). 
 #' @param return.NApercentage Logical to also return or not a grid containing NA percentage information.
+#' @param condition Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation.
+#' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+#' \code{"LT"} = lower than, \code{"LE"} = lower or equal than.
+#' @param threshold Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.
+#' @param which.wetdays A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
+#' As there are two temporal series (i.e., x and y), the subsetting can be done according to the observed(i.e., y) serie, to the intersection of the both wet days subsets
+#' or finally subset each serie according to its own wet days subset. The possible values are c("Observation","Intersection","Independent"). 
+#' When performing an index instead of a measure the only possible value is "Independent".
 #' @template templateParallelParams 
 #' @details Some measures are computed directly from the original time series (e.g. temporal correlation),
 #' whereas others are computed upon previouly computed indices (e.g. mean bias). 
@@ -47,11 +55,14 @@ valueMeasure <- function(y, x,
                          return.NApercentage = TRUE,
                          parallel = FALSE,
                          max.ncores = 16,
+                         condition = NULL, 
+                         threshold = NULL,
+                         which.wetdays = NULL,
                          ncores = NULL){
   if (any(c("biasCirc", "bias", "biasRel", "ratio") %in% measure.code)) {
     if (is.null(index.code)) stop("This measure requires previous index calculation. Please provide an index.code (Use VALUE::show.indices() to choose an index).")
-    index.y <- valueIndex(grid = y, index.code = index.code, parallel = parallel, max.ncores = max.ncores, ncores = ncores)
-    index.x <- valueIndex(grid = x, index.code = index.code, parallel = parallel, max.ncores = max.ncores, ncores = ncores)
+    index.y <- valueIndex(grid = y, index.code = index.code, parallel = parallel, max.ncores = max.ncores, ncores = ncores, condition = condition, threshold = threshold, which.wetdays = which.wetdays)
+    index.x <- valueIndex(grid = x, index.code = index.code, parallel = parallel, max.ncores = max.ncores, ncores = ncores, condition = condition, threshold = threshold, which.wetdays = which.wetdays)
     y <- index.y[["Index"]]
     x <- index.x[["Index"]]
     na.percent <- index.y[["NApercentage"]]
@@ -62,6 +73,19 @@ valueMeasure <- function(y, x,
   xy <- y$xyCoords
   dimNames <- attr(redim(y, member = FALSE, loc = station)$Data, "dimensions")
   suppressWarnings(suppressMessages(ix <- interpGrid(x, getGrid(y))))
+  
+  if (!is.null(threshold) & is.null(condition)) condition = "GE"
+  if (!is.null(threshold) & !is.null(condition) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
+  if (!is.null(condition)) {
+    if (is.null(threshold)) stop("Please specify the threshold value with parameter 'threshold'")
+    ineq <- switch(condition,
+                   "GT" = ">",
+                   "GE" = ">=",
+                   "LT" = "<",
+                   "LE" = "<=")
+  }
+
+  ix <- redim(ix, drop = TRUE)
   y <- redim(y, drop = TRUE)
   y <- redim(y, member = FALSE, runtime = FALSE)
   ix <- redim(ix, member = TRUE, runtime = TRUE)
@@ -80,8 +104,43 @@ valueMeasure <- function(y, x,
           abind(array3Dto2Dmat(data[[x]]), along = 3)
         }) 
       }
-      o <- lapply(seq_len(ncol(data[[1]])), function(i) data[[1]][,i,1])
-      p <- lapply(seq_len(ncol(data[[2]])), function(i) data[[2]][,i,1])
+      
+      o <- lapply(seq_len(ncol(data[[1]])), function(i) {
+        yy_o <- data[[1]][,i,1]
+        yy_p <- data[[2]][,i,1]
+        if (is.null(which.wetdays)) {
+          yy_o
+        } else if (which.wetdays >= "Observation") {
+          ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
+          yy_o[ind_o]
+        } else if (which.wetdays >= "Intersection") {
+          ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
+          ind_p = eval(parse(text = paste("yy_p", ineq, "threshold")))
+          ind_op <- intersect(ind_o,ind_p)
+          yy_o[ind_op]
+        } else if (which.wetdays >= "Independent") {
+          ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
+          yy_o[ind_o]
+        }
+      })
+      p <- lapply(seq_len(ncol(data[[2]])), function(i) {
+        yy_o <- data[[1]][,i,1]
+        yy_p <- data[[2]][,i,1]
+        if (is.null(which.wetdays)) {
+          yy_p
+        } else if (which.wetdays >= "Observation") {
+          ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
+          yy_p[ind_o]
+        } else if (which.wetdays >= "Intersection") {
+          ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
+          ind_p = eval(parse(text = paste("yy_p", ineq, "threshold")))
+          ind_op <- intersect(ind_o,ind_p)
+          yy_p[ind_op]
+        } else if (which.wetdays >= "Independent") {
+          ind_p = eval(parse(text = paste("yy_p", ineq, "threshold")))
+          yy_p[ind_p]
+        }
+      })
       nona.o <- lapply(o, function(x) which(!is.na(x)))
       nona.p <- lapply(p, function(x) which(!is.na(x)))
       sea <- unlist(lapply(1:length(nona.o), function(x) {
@@ -94,12 +153,14 @@ valueMeasure <- function(y, x,
           1:length(y$Dates$start)
         }
       })
+
       dates <- list()
       for (i in 1:length(nonaind)) {
         dates[[i]] <- y$Dates$start[nonaind[[i]]]
         o[[i]] <- o[[i]][nonaind[[i]]]
         p[[i]] <- p[[i]][nonaind[[i]]]
       }
+      
       mat <- abind(valueMeasureXD(o = o, p = p, io = o, ip = p, dates = dates, measure.code = measure.code, 
                                   parallel = parallel, max.ncores = max.ncores, ncores = ncores), 
                    along = 0)

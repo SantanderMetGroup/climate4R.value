@@ -20,6 +20,12 @@
 #' @param grid Grid (also station data) of observations
 #' @param index.code Characher of the index code to be computed (use VALUE::show.indices). 
 #' @param return.NApercentage Logical to also return or not a grid containing NA percentage information.
+#' @param condition Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation the model.
+#' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+#' \code{"LT"} = lower than, \code{"LE"} = lower or equal than.
+#' @param threshold Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.
+#' @param which.wetdays A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
+#' In this case, set which.wetdays = "Independent".
 #' @template templateParallelParams 
 #' @return A grid of the index or a list containing the grid of the index and the 
 #' grid of NA percenatage
@@ -39,7 +45,24 @@ valueIndex <- function(grid = NULL, index.code = NULL,
                        return.NApercentage = TRUE,
                        parallel = FALSE,
                        max.ncores = 16,
+                       condition = NULL, 
+                       threshold = NULL,
+                       which.wetdays = NULL,
                        ncores = NULL){
+  
+  if (!is.null(threshold) & is.null(condition)) condition = "GE"
+  if (!is.null(threshold) & !is.null(condition) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
+  if (!is.null(which.wetdays)) { 
+    if (which.wetdays != "Independent") stop("The only valid which.wetdays value is 'Independent' ")
+  }
+  if (!is.null(condition)) {
+    if (is.null(threshold)) stop("Please specify the threshold value with parameter 'threshold'")
+    ineq <- switch(condition,
+                   "GT" = ">",
+                   "GE" = ">=",
+                   "LT" = "<",
+                   "LE" = "<=")
+  }
   station <- FALSE
   if ("loc" %in% getDim(grid)) station <- TRUE
   xy <- grid$xyCoords
@@ -57,7 +80,15 @@ valueIndex <- function(grid = NULL, index.code = NULL,
           attr(p, "dimensions") <- c("time", "lat", "lon")
           p <- abind(array3Dto2Dmat(p), along = 3)
       }
-      p <- lapply(seq_len(ncol(p)), function(i) p[,i,1])
+      p <- lapply(seq_len(ncol(p)), function(i) {
+        yy_p <- p[,i,1]
+        if (is.null(which.wetdays)) {
+          yy_p
+        } else if (which.wetdays >= "Independent") {
+          ind_p = eval(parse(text = paste("yy_p", ineq, "threshold")))
+          yy_p[ind_p]
+        }
+      })
       nona.p <- lapply(p, function(x) which(!is.na(x)))
       sea <- unlist(lapply(1:length(nona.p), function(x) {
         if (length(nona.p[[x]]) == 0)  x
