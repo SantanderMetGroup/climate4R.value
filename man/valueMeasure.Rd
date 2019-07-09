@@ -6,6 +6,7 @@
 \usage{
 valueMeasure(y, x, measure.code, index.code = NULL,
   return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
+  condition = NULL, threshold = NULL, which.wetdays = NULL,
   ncores = NULL)
 }
 \arguments{
@@ -23,6 +24,17 @@ valueMeasure(y, x, measure.code, index.code = NULL,
 
 \item{max.ncores}{Integer. Upper bound for user-defined number of cores.}
 
+\item{condition}{Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation.
+\code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+\code{"LT"} = lower than, \code{"LE"} = lower or equal than.}
+
+\item{threshold}{Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.}
+
+\item{which.wetdays}{A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
+As there are two temporal series (i.e., x and y), the subsetting can be done according to the observed(i.e., y) serie, to the intersection of the both wet days subsets
+or finally subset each serie according to its own wet days subset. The possible values are c("Observation","Intersection","Independent"). 
+When performing an index instead of a measure the only possible value is "Independent".}
+
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
 }
@@ -37,6 +49,14 @@ VALUE measure calculation for climate4R grids
 Some measures are computed directly from the original time series (e.g. temporal correlation),
 whereas others are computed upon previouly computed indices (e.g. mean bias). 
 Thus, argument \code{index.code} must be provided for the latter case.
+}
+\examples{
+require(transformeR)
+y <- EOBS_Iberia_tas
+x <- CFS_Iberia_tas
+bias <- valueMeasure(y, x, measure.code = "bias", index.code = "mean")
+str(bias$Measure)
+str(bias$NAmeanPercentage)
 }
 \author{
 M. Iturbide
