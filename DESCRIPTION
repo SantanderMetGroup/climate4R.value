@@ -11,19 +11,19 @@ Suggests:
     loadeR.ECOMS,
     visualizeR
 Type: Package
-Title: An R package for geoprocessing climate4R data 
-Version: 0.0.0
-Date: 2019-03-14
+Title: A climate4R package binding the VALUE R package for model validation
+Version: 0.0.1
+Date: 2019-07-09
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Joaquin Bedia <bediaj@unican.es> [aut]",
     "Maialen Iturbide <miturbide@ifca.unican.es> [aut, cre]"))
 BugReports: https://github.com/SantanderMetGroup/geoprocesseR/issues
-URL: in construction
+URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
 Description: Wrapper of package VALUE to compute several indices and
     perform climate data validation using the tools developed in the COST
-    action VALUE.
+    action VALUE <http://www.value-cost.eu/>.
 License: file LICENSE
 LazyData: true
 RoxygenNote: 6.1.1
