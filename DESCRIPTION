@@ -18,7 +18,7 @@ Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
     "Joaquin Bedia <bediaj@unican.es> [aut]",
     "Maialen Iturbide <miturbide@ifca.unican.es> [aut, cre]"))
-BugReports: https://github.com/SantanderMetGroup/geoprocesseR/issues
+BugReports: https://github.com/SantanderMetGroup/climate4R.value/issues
 URL: http://www.meteo.unican.es/climate4r
 Encoding: UTF-8
 Description: Wrapper of package VALUE to compute several indices and
