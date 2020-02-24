@@ -42,12 +42,12 @@
 #' @author M. Iturbide
 #' @export
 #' @examples 
-# library(transformeR)
-# y <- EOBS_Iberia_tas
-# x <- CFS_Iberia_tas
-# bias <- valueMeasure(y, x, measure.code = "bias", index.code = "mean")
-# str(bias$Measure)
-# str(bias$NAmeanPercentage)
+#' require(transformeR)
+#' y <- EOBS_Iberia_tas
+#' x <- CFS_Iberia_tas
+#' bias <- valueMeasure(y, x, measure.code = "bias", index.code = "mean")
+#' str(bias$Measure)
+#' str(bias$NAmeanPercentage)
 
 valueMeasure <- function(y, x, 
                          measure.code, 
