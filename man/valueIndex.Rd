@@ -6,6 +6,7 @@
 \usage{
 valueIndex(grid = NULL, index.code = NULL,
   return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
+  condition = NULL, threshold = NULL, which.wetdays = NULL,
   ncores = NULL)
 }
 \arguments{
@@ -18,6 +19,15 @@ valueIndex(grid = NULL, index.code = NULL,
 \item{parallel}{Logical. Should parallel execution be used?}
 
 \item{max.ncores}{Integer. Upper bound for user-defined number of cores.}
+
+\item{condition}{Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation the model.
+\code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+\code{"LT"} = lower than, \code{"LE"} = lower or equal than.}
+
+\item{threshold}{Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.}
+
+\item{which.wetdays}{A string, default to NULL. Infer the measure/index taking into account only the wet days of the temporal serie. 
+In this case, set which.wetdays = "Independent".}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}

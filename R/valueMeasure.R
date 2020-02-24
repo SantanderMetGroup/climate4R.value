@@ -27,7 +27,7 @@
 #' \code{"LT"} = lower than, \code{"LE"} = lower or equal than.
 #' @param threshold Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.
 #' @param which.wetdays A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
-#' As there are two temporal series (i.e., x and y), the subsetting can be done according to the observed(i.e., y) serie, to the intersection of the both wet days subsets
+#' As there are two temporal series (i.e., x and y), the subsetting can be done according to the observed (i.e., y) serie, to the intersection of the both wet days subsets
 #' or finally subset each serie according to its own wet days subset. The possible values are c("Observation","Intersection","Independent"). 
 #' When performing an index instead of a measure the only possible value is "Independent".
 #' @template templateParallelParams 
@@ -112,7 +112,9 @@ valueMeasure <- function(y, x,
           yy_o
         } else if (which.wetdays >= "Observation") {
           ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
-          yy_o[ind_o]
+          if (any(sapply(1:length(ind_o), function(z) isTRUE(ind_o[z])))) yy_o[ind_o]
+          else NA
+          
         } else if (which.wetdays >= "Intersection") {
           ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
           ind_p = eval(parse(text = paste("yy_p", ineq, "threshold")))
@@ -130,7 +132,8 @@ valueMeasure <- function(y, x,
           yy_p
         } else if (which.wetdays >= "Observation") {
           ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
-          yy_p[ind_o]
+          if (any(sapply(1:length(ind_o), function(z) isTRUE(ind_o[z])))) yy_p[ind_o]
+          else NA
         } else if (which.wetdays >= "Intersection") {
           ind_o = eval(parse(text = paste("yy_o", ineq, "threshold")))
           ind_p = eval(parse(text = paste("yy_p", ineq, "threshold")))
