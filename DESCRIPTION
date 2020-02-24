@@ -12,7 +12,7 @@ Suggests:
     visualizeR
 Type: Package
 Title: A climate4R package binding the VALUE R package for model validation
-Version: 0.0.3
+Version: 0.0.2
 Date: 2020-02-24
 Authors@R: as.person(c(
     "Santander Meteorology Group <http://meteo.unican.es> [cph]",
