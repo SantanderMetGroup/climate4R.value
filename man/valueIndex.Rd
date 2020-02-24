@@ -26,7 +26,7 @@ valueIndex(grid = NULL, index.code = NULL,
 
 \item{threshold}{Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.}
 
-\item{which.wetdays}{A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
+\item{which.wetdays}{A string, default to NULL. Infer the measure/index taking into account only the wet days of the temporal serie. 
 In this case, set which.wetdays = "Independent".}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of

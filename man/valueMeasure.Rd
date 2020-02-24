@@ -31,8 +31,8 @@ valueMeasure(y, x, measure.code, index.code = NULL,
 \item{threshold}{Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.}
 
 \item{which.wetdays}{A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
-
-As there are two temporal series (i.e., x and y), the subsetting can be done according to the observed(i.e., y) serie, to the intersection of the both wet days subsets or finally subset each serie according to its own wet days subset. The possible values are c("Observation","Intersection","Independent"). 
+As there are two temporal series (i.e., x and y), the subsetting can be done according to the observed (i.e., y) serie, to the intersection of the both wet days subsets
+or finally subset each serie according to its own wet days subset. The possible values are c("Observation","Intersection","Independent"). 
 When performing an index instead of a measure the only possible value is "Independent".}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
