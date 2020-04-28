@@ -177,9 +177,9 @@ valueIndex <- function(grid = NULL, index.code = NULL,
       )
     } else {
       dimnames(out$Data)[[length(dim(out$Data))]] <- 
-        data.st.precip$Metadata$station_id
+        grid$Metadata$station_id
       dimnames(out$Data)[[length(dim(out$Data))-1]] <- 
-        data.st.precip$Metadata$station_id
+        grid$Metadata$station_id
     }
         
     out <- redim(out, drop = TRUE)
