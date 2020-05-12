@@ -162,7 +162,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
     
     if (!station) {
       xyCoords.attr <- attributes(out$xyCoords)
-      out$xyCoords <- transformeR:::get2DmatCoordinates(out)
+      out$xyCoords <- transformeR::get2DmatCoordinates(out)
       attr(out$xyCoords, "resX.grid") <- xyCoords.attr$resX
       attr(out$xyCoords, "resX") <- 0
       attr(out$xyCoords, "resY.grid") <- xyCoords.attr$resY
