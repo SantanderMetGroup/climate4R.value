@@ -4,15 +4,23 @@
 \alias{valueIndex}
 \title{VALUE measure calculation for climate4R grids}
 \usage{
-valueIndex(grid = NULL, index.code = NULL,
-  return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
-  condition = NULL, threshold = NULL, which.wetdays = NULL,
-  ncores = NULL)
+valueIndex(
+  grid = NULL,
+  index.code = NULL,
+  return.NApercentage = TRUE,
+  parallel = FALSE,
+  max.ncores = 16,
+  condition = NULL,
+  threshold = NULL,
+  which.wetdays = NULL,
+  ncores = NULL,
+  silent = TRUE
+)
 }
 \arguments{
 \item{grid}{Grid (also station data) of observations}
 
-\item{index.code}{Characher of the index code to be computed (use VALUE::show.indices).}
+\item{index.code}{Character of the index code to be computed (use VALUE::show.indices).}
 
 \item{return.NApercentage}{Logical to also return or not a grid containing NA percentage information.}
 
@@ -31,6 +39,8 @@ In this case, set which.wetdays = "Independent".}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
+
+\item{silent}{Set to TRUE for no messages.}
 }
 \value{
 A grid of the index or a list containing the grid of the index and the 

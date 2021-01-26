@@ -4,8 +4,14 @@
 \alias{valueIndexXD}
 \title{VALUE atomic and spatial index calculation}
 \usage{
-valueIndexXD(ts = NULL, dates = NULL, index.code = NULL,
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+valueIndexXD(
+  ts = NULL,
+  dates = NULL,
+  index.code = NULL,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{ts}{list containing time series for each gridpoint/station}
@@ -30,5 +36,7 @@ grid of NA percenatage
 VALUE index calculation helper function
 }
 \author{
-M. Iturbide, M.N. Legasa
+M. Iturbide,
+
+M.N. Legasa
 }

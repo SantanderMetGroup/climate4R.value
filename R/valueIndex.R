@@ -26,6 +26,7 @@
 #' @param threshold Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.
 #' @param which.wetdays A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
 #' In this case, set which.wetdays = "Independent".
+#' @param silent Set to TRUE for no messages.
 #' @template templateParallelParams 
 #' @return A grid of the index or a list containing the grid of the index and the 
 #' grid of NA percenatage
@@ -49,7 +50,8 @@ valueIndex <- function(grid = NULL, index.code = NULL,
                        condition = NULL, 
                        threshold = NULL,
                        which.wetdays = NULL,
-                       ncores = NULL){
+                       ncores = NULL,
+                       silent = TRUE){
   if (is.null(index.code) || length(index.code) > 1) stop("Please provide a single index.code.")
   if (!is.null(threshold) & is.null(condition)) condition = "GE"
   if (!is.null(threshold) & !is.null(condition) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
@@ -75,7 +77,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
   n.mem <- getShape(grid)["member"]
   runarr <- lapply(1:n.run, function(l) {
     memarr <- lapply(1:n.mem, function(m) {
-      message("[", Sys.time(), "] Computing member ", m, " out of ", n.mem)
+      if (!silent) message("[", Sys.time(), "] Computing member ", m, " out of ", n.mem)
       p = adrop(grid$Data[l, m, , , , drop = FALSE], drop = c(T, T, F, F, F))
       if (!station) {
           attr(p, "dimensions") <- c("time", "lat", "lon")
@@ -193,7 +195,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
     out$Variable$varName <- index.code
     out <- redim(out, drop = TRUE)
   }
-  message("[", Sys.time(), "] Done.")
+  if (!silent) message("[", Sys.time(), "] Done.")
   
   if (return.NApercentage) {
     out.na$Data <- unname(do.call("abind", list(lapply(runarr, "[[", 2), along = 0)))
@@ -226,7 +228,8 @@ valueIndex <- function(grid = NULL, index.code = NULL,
 #' grid of NA percenatage
 #' @importFrom transformeR parallelCheck
 #' @importFrom VALUE valueIndex1D valueIndex2D show.indices
-#' @author M. Iturbide, M.N. Legasa
+#' @author M. Iturbide,
+#' @author M.N. Legasa
 
 valueIndexXD <- function(ts = NULL,
                          dates = NULL, 
