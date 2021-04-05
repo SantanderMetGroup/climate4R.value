@@ -24,7 +24,7 @@
 #' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
 #' \code{"LT"} = lower than, \code{"LE"} = lower or equal than.
 #' @param threshold Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.
-#' @param which.wetdays A string, default to NULL. Infer the measure/index taiking into account only the wet days of the temporal serie. 
+#' @param which.wetdays A string, default to NULL. Infer the measure/index taking into account only the wet days of the temporal serie. 
 #' In this case, set which.wetdays = "Independent".
 #' @template templateParallelParams 
 #' @return A grid of the index or a list containing the grid of the index and the 
