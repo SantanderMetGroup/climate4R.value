@@ -6,3 +6,4 @@ climate4R.value.Rproj
 .Rprofile
 *.Rbuildignore
 .cache
+.DS_Store

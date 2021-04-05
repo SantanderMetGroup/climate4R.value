@@ -72,7 +72,11 @@ valueMeasure <- function(y, x,
   if ("loc" %in% getDim(y)) station <- TRUE
   xy <- y$xyCoords
   dimNames <- attr(redim(y, member = FALSE, loc = station)$Data, "dimensions")
-  suppressWarnings(suppressMessages(ix <- interpGrid(x, getGrid(y))))
+  if (!identical(getGrid(x),getGrid(y))) {
+    suppressWarnings(suppressMessages(ix <- interpGrid(x, getGrid(y))))
+  } else {
+    ix <- x
+  }
   
   if (!is.null(threshold) & is.null(condition)) condition = "GE"
   if (!is.null(threshold) & !is.null(condition) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
