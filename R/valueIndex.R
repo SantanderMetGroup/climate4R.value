@@ -200,7 +200,7 @@ valueIndex <- function(grid,
     out <- redim(out, drop = TRUE)
   # }
   message("[", Sys.time(), "] Done.")
-  
+  attr(out$Variable, "value_args") <- paste(names(index.arg.list), unlist(index.arg.list))
   if (return.NApercentage) {
     out.na$Data <- unname(do.call("abind", list(lapply(runarr, "[[", 2), along = 0)))
     attr(out.na$Data, "dimensions") <- unique(c("runtime", "member", dimNames))
@@ -243,7 +243,6 @@ valueIndexXD <- function(ts = NULL,
                          max.ncores = 16,
                          ncores = NULL){
   index.arg.list <- list(...)
-  print(str(index.arg.list))
   # if (show.indices(index.code = index.code)[1,"SPATIAL"]){
   #   # parallelization is carried out internally
   #   valueIndex2D(tsl = ts, dates = dates, index.code = index.code,
