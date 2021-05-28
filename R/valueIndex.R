@@ -20,6 +20,7 @@
 #' @param grid Grid (also station data) of observations
 #' @param index.code Character of the index code to be computed (use VALUE::show.indices). 
 #' @param return.NApercentage Logical to also return or not a grid containing NA percentage information.
+#' @param ... Additional arguments pased to FUNCTION.CALL (use VALUE::show.indices to check the available arguments).
 #' @param condition Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation the model.
 #' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
 #' \code{"LT"} = lower than, \code{"LE"} = lower or equal than.
@@ -31,25 +32,29 @@
 #' grid of NA percenatage
 #' @importFrom abind adrop abind
 #' @import transformeR
-#' @importFrom VALUE valueIndex1D valueIndex2D show.indices
+#' @importFrom VALUE valueIndex1D show.indices
 #' @author M. Iturbide
 #' @author M. N. Legasa
 #' @export
 #' @examples 
 #' library(transformeR)
+#' require(climate4R.datasets)
+#' data(EOBS_Iberia_tas)
 #' y <- EOBS_Iberia_tas
 #' m <- valueIndex(y, "mean")
 #' str(m$Index)
 #' str(m$NApercentage)
 
 valueIndex <- function(grid = NULL, index.code = NULL,
-                       return.NApercentage = TRUE,
+                       return.NApercentage = FALSE,
+                       ...,
                        parallel = FALSE,
                        max.ncores = 16,
                        condition = NULL, 
                        threshold = NULL,
                        which.wetdays = NULL,
                        ncores = NULL){
+  index.arg.list <- list(...)
   if (is.null(index.code) || length(index.code) > 1) stop("Please provide a single index.code.")
   if (!is.null(threshold) & is.null(condition)) condition = "GE"
   if (!is.null(threshold) & !is.null(condition) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
@@ -104,14 +109,14 @@ valueIndex <- function(grid = NULL, index.code = NULL,
       dates <- list()
       
       # NAs are handled internally for spatial indices
-      if (!show.indices(index.code = index.code)[1,"SPATIAL"]){
-        for (i in 1:length(nonaind)) { 
-          dates[[i]] <- grid$Dates$start[nonaind[[i]]]
-          p[[i]] <- p[[i]][nonaind[[i]]]
-        }
-      } else {
+      # if (!show.indices(index.code = index.code)[1,"SPATIAL"]){
+      #   for (i in 1:length(nonaind)) { 
+      #     dates[[i]] <- grid$Dates$start[nonaind[[i]]]
+      #     p[[i]] <- p[[i]][nonaind[[i]]]
+      #   }
+      # } else {
         dates <- grid$Dates$start
-      }
+      # }
       
       na.mat <- do.call("abind", 
                         list(lapply(nonaind,
@@ -120,12 +125,12 @@ valueIndex <- function(grid = NULL, index.code = NULL,
                              , along = 2)
                         )
       na.mat[1, sea] <- NA
-      
-      idx <- valueIndexXD(ts = p, dates = dates, 
-                          index.code = index.code, 
-                          parallel = parallel,
-                          max.ncores = max.ncores, 
-                          ncores = ncores)
+      args <- c(list(ts = p, dates = dates, 
+                   index.code = index.code, 
+                   parallel = parallel,
+                   max.ncores = max.ncores, 
+                   ncores = ncores), index.arg.list)
+      idx <- do.call("valueIndexXD", args)
       if (is.matrix(idx)){
         if (is.null(attributes(idx)$dimnames.names)) attr(idx, "dimnames.names") <- c("loc", "loc")
         tbr <- list(idx = idx, na.mat = na.mat)
@@ -150,40 +155,40 @@ valueIndex <- function(grid = NULL, index.code = NULL,
 
   if (return.NApercentage) out.na <- out
   
-  if (show.indices(index.code = index.code)[1,"SPATIAL"]){
-    dimnames.names <- attributes(runarr[[1]])$dimnames.names
-    out$Data <- unname(do.call("abind", list(lapply(runarr, "[[", 1), along = 0)))
-    
-    attr(out$Data, "dimensions") <- 
-      c(c("runtime", "member"), dimnames.names)
-    out$Dates$start <- grid$Dates$start[1]
-    out$Dates$end <- range(grid$Dates$end)[2]
-    out$Variable$varName <- index.code
-    
-    if (!station) {
-      xyCoords.attr <- attributes(out$xyCoords)
-      out$xyCoords <- transformeR::get2DmatCoordinates(out)
-      attr(out$xyCoords, "resX.grid") <- xyCoords.attr$resX
-      attr(out$xyCoords, "resX") <- 0
-      attr(out$xyCoords, "resY.grid") <- xyCoords.attr$resY
-      attr(out$xyCoords, "resY") <- 0
-      dimnames(out$Data)[[length(dim(out$Data))]] <-
-        mapply(FUN = paste, out$xyCoords$x, out$xyCoords$y,
-               MoreArgs = list(sep = ",")
-      )
-      dimnames(out$Data)[[length(dim(out$Data))-1]] <- 
-        mapply(FUN = paste, out$xyCoords$x, out$xyCoords$y,
-               MoreArgs = list(sep = ",")
-      )
-    } else {
-      dimnames(out$Data)[[length(dim(out$Data))]] <- 
-        grid$Metadata$station_id
-      dimnames(out$Data)[[length(dim(out$Data))-1]] <- 
-        grid$Metadata$station_id
-    }
-        
-    out <- redim(out, drop = TRUE)
-  } else {
+  # if (show.indices(index.code = index.code)[1,"SPATIAL"]){
+  #   dimnames.names <- attributes(runarr[[1]])$dimnames.names
+  #   out$Data <- unname(do.call("abind", list(lapply(runarr, "[[", 1), along = 0)))
+  #   
+  #   attr(out$Data, "dimensions") <- 
+  #     c(c("runtime", "member"), dimnames.names)
+  #   out$Dates$start <- grid$Dates$start[1]
+  #   out$Dates$end <- range(grid$Dates$end)[2]
+  #   out$Variable$varName <- index.code
+  #   
+  #   if (!station) {
+  #     xyCoords.attr <- attributes(out$xyCoords)
+  #     out$xyCoords <- transformeR::get2DmatCoordinates(out)
+  #     attr(out$xyCoords, "resX.grid") <- xyCoords.attr$resX
+  #     attr(out$xyCoords, "resX") <- 0
+  #     attr(out$xyCoords, "resY.grid") <- xyCoords.attr$resY
+  #     attr(out$xyCoords, "resY") <- 0
+  #     dimnames(out$Data)[[length(dim(out$Data))]] <-
+  #       mapply(FUN = paste, out$xyCoords$x, out$xyCoords$y,
+  #              MoreArgs = list(sep = ",")
+  #     )
+  #     dimnames(out$Data)[[length(dim(out$Data))-1]] <- 
+  #       mapply(FUN = paste, out$xyCoords$x, out$xyCoords$y,
+  #              MoreArgs = list(sep = ",")
+  #     )
+  #   } else {
+  #     dimnames(out$Data)[[length(dim(out$Data))]] <- 
+  #       grid$Metadata$station_id
+  #     dimnames(out$Data)[[length(dim(out$Data))-1]] <- 
+  #       grid$Metadata$station_id
+  #   }
+  #       
+  #   out <- redim(out, drop = TRUE)
+  # } else {
     out$Data <- unname(do.call("abind", list(lapply(runarr, "[[", 1), along = 0)))
     attr(out$Data, "dimensions") <- unique(c("runtime", "member", dimNames))
     out$Dates$start <- grid$Dates$start[1]
@@ -192,7 +197,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
     if (station) out <- redim(out, loc = TRUE)
     out$Variable$varName <- index.code
     out <- redim(out, drop = TRUE)
-  }
+  # }
   message("[", Sys.time(), "] Done.")
   
   if (return.NApercentage) {
@@ -219,30 +224,33 @@ valueIndex <- function(grid = NULL, index.code = NULL,
 #'  (i.e., \code{format = "\%Y-\%m-\%d"} as in \code{\link{strptime}}). Note that the dates are not required 
 #'  by all indices, so the default is \code{NULL}. The function will yield an error if dates are required but not supplied.
 #' @param index.code Characher of the index code to be computed (use VALUE::show.indices). 
+#' @param ... Additional arguments pased to FUNCTION.CALL (use VALUE::show.indices to check the available arguments).
 #' @param parallel Use parallel computing?
 #' @param max.ncores Maximum number of cores to use
 #' @param ncores Number of cores to use for parallel computing. Default to ncores-1.
 #' @return A grid of the index or a list containing the grid of the index and the 
 #' grid of NA percenatage
 #' @importFrom transformeR parallelCheck
-#' @importFrom VALUE valueIndex1D valueIndex2D show.indices
+#' @importFrom VALUE valueIndex1D show.indices
 #' @author M. Iturbide, M.N. Legasa
 
 valueIndexXD <- function(ts = NULL,
                          dates = NULL, 
                          index.code = NULL, 
+                         ...,
                          parallel = FALSE,
                          max.ncores = 16,
                          ncores = NULL){
-  if (show.indices(index.code = index.code)[1,"SPATIAL"]){
-    # parallelization is carried out internally
-    valueIndex2D(tsl = ts, dates = dates, index.code = index.code,
-                 parallel = parallel, max.ncores = max.ncores, ncores = ncores)
-  } else {
+  index.arg.list <- list(...)
+  # if (show.indices(index.code = index.code)[1,"SPATIAL"]){
+  #   # parallelization is carried out internally
+  #   valueIndex2D(tsl = ts, dates = dates, index.code = index.code,
+  #                parallel = parallel, max.ncores = max.ncores, ncores = ncores)
+  # } else {
     parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
     mapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "mapply")
     if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-    mapply_fun(valueIndex1D, ts, dates, MoreArgs = list(index.code))
-  }
+    mapply_fun(valueIndex1D, ts, dates, MoreArgs = c(list(index.codes = index.code), index.arg.list))
+  # }
 }
 #end

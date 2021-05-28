@@ -4,8 +4,15 @@
 \alias{valueIndexXD}
 \title{VALUE atomic and spatial index calculation}
 \usage{
-valueIndexXD(ts = NULL, dates = NULL, index.code = NULL,
-  parallel = FALSE, max.ncores = 16, ncores = NULL)
+valueIndexXD(
+  ts = NULL,
+  dates = NULL,
+  index.code = NULL,
+  ...,
+  parallel = FALSE,
+  max.ncores = 16,
+  ncores = NULL
+)
 }
 \arguments{
 \item{ts}{list containing time series for each gridpoint/station}
@@ -15,6 +22,8 @@ valueIndexXD(ts = NULL, dates = NULL, index.code = NULL,
 by all indices, so the default is \code{NULL}. The function will yield an error if dates are required but not supplied.}
 
 \item{index.code}{Characher of the index code to be computed (use VALUE::show.indices).}
+
+\item{...}{Additional arguments pased to FUNCTION.CALL (use VALUE::show.indices to check the available arguments).}
 
 \item{parallel}{Use parallel computing?}
 

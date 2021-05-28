@@ -4,10 +4,19 @@
 \alias{valueMeasure}
 \title{VALUE measure calculation for climate4R grids}
 \usage{
-valueMeasure(y, x, measure.code, index.code = NULL,
-  return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
-  condition = NULL, threshold = NULL, which.wetdays = NULL,
-  ncores = NULL)
+valueMeasure(
+  y,
+  x,
+  measure.code,
+  index.code = NULL,
+  return.NApercentage = TRUE,
+  parallel = FALSE,
+  max.ncores = 16,
+  condition = NULL,
+  threshold = NULL,
+  which.wetdays = NULL,
+  ncores = NULL
+)
 }
 \arguments{
 \item{y}{Grid (also station data) of observations}
@@ -52,6 +61,9 @@ Thus, argument \code{index.code} must be provided for the latter case.
 }
 \examples{
 require(transformeR)
+require(climate4R.datasets)
+data(EOBS_Iberia_tas)
+data(CFS_Iberia_tas)
 y <- EOBS_Iberia_tas
 x <- CFS_Iberia_tas
 bias <- valueMeasure(y, x, measure.code = "bias", index.code = "mean")

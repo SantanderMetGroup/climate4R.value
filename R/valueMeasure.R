@@ -43,6 +43,9 @@
 #' @export
 #' @examples 
 #' require(transformeR)
+#' require(climate4R.datasets)
+#' data(EOBS_Iberia_tas)
+#' data(CFS_Iberia_tas)
 #' y <- EOBS_Iberia_tas
 #' x <- CFS_Iberia_tas
 #' bias <- valueMeasure(y, x, measure.code = "bias", index.code = "mean")

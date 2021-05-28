@@ -4,17 +4,27 @@
 \alias{valueIndex}
 \title{VALUE measure calculation for climate4R grids}
 \usage{
-valueIndex(grid = NULL, index.code = NULL,
-  return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
-  condition = NULL, threshold = NULL, which.wetdays = NULL,
-  ncores = NULL)
+valueIndex(
+  grid = NULL,
+  index.code = NULL,
+  return.NApercentage = FALSE,
+  ...,
+  parallel = FALSE,
+  max.ncores = 16,
+  condition = NULL,
+  threshold = NULL,
+  which.wetdays = NULL,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Grid (also station data) of observations}
 
-\item{index.code}{Characher of the index code to be computed (use VALUE::show.indices).}
+\item{index.code}{Character of the index code to be computed (use VALUE::show.indices).}
 
 \item{return.NApercentage}{Logical to also return or not a grid containing NA percentage information.}
+
+\item{...}{Additional arguments pased to FUNCTION.CALL (use VALUE::show.indices to check the available arguments).}
 
 \item{parallel}{Logical. Should parallel execution be used?}
 
@@ -41,6 +51,8 @@ VALUE measure calculation for climate4R grids
 }
 \examples{
 library(transformeR)
+require(climate4R.datasets)
+data(EOBS_Iberia_tas)
 y <- EOBS_Iberia_tas
 m <- valueIndex(y, "mean")
 str(m$Index)
