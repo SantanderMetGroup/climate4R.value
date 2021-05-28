@@ -21,10 +21,10 @@
 #' @param index.code Character of the index code to be computed (use VALUE::show.indices). 
 #' @param return.NApercentage Logical to also return or not a grid containing NA percentage information.
 #' @param ... Additional arguments pased to FUNCTION.CALL (use VALUE::show.indices to check the available arguments).
-#' @param condition Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation the model.
-#' \code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
+#' @param cond Inequality operator to be applied to the given \code{"th"}. Only the days that satisfy the condition will be used for validation the model.
+#' \code{"GT"} = greater than the value of \code{th}, \code{"GE"} = greater or equal,
 #' \code{"LT"} = lower than, \code{"LE"} = lower or equal than.
-#' @param threshold Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.
+#' @param th Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{th}. Then condition is set to \code{"GE"}.
 #' @param which.wetdays A string, default to NULL. Infer the measure/index taking into account only the wet days of the temporal serie. 
 #' In this case, set which.wetdays = "Independent".
 #' @template templateParallelParams 
@@ -45,25 +45,26 @@
 #' str(m$Index)
 #' str(m$NApercentage)
 
-valueIndex <- function(grid = NULL, index.code = NULL,
+valueIndex <- function(grid, 
+                       index.code,
                        return.NApercentage = FALSE,
                        ...,
                        parallel = FALSE,
                        max.ncores = 16,
-                       condition = NULL, 
-                       threshold = NULL,
+                       con = NULL, 
+                       th = NULL,
                        which.wetdays = NULL,
                        ncores = NULL){
   index.arg.list <- list(...)
   if (is.null(index.code) || length(index.code) > 1) stop("Please provide a single index.code.")
-  if (!is.null(threshold) & is.null(condition)) condition = "GE"
-  if (!is.null(threshold) & !is.null(condition) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
+  if (!is.null(th) & is.null(con)) con = "GE"
+  if (!is.null(th) & !is.null(con) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
   if (!is.null(which.wetdays)) { 
     if (which.wetdays != "Independent") stop("The only valid which.wetdays value is 'Independent' ")
   }
-  if (!is.null(condition)) {
-    if (is.null(threshold)) stop("Please specify the threshold value with parameter 'threshold'")
-    ineq <- switch(condition,
+  if (!is.null(con)) {
+    if (is.null(th)) stop("Please specify the threshold value with parameter 'threshold'")
+    ineq <- switch(cond,
                    "GT" = ">",
                    "GE" = ">=",
                    "LT" = "<",
@@ -242,6 +243,7 @@ valueIndexXD <- function(ts = NULL,
                          max.ncores = 16,
                          ncores = NULL){
   index.arg.list <- list(...)
+  print(str(index.arg.list))
   # if (show.indices(index.code = index.code)[1,"SPATIAL"]){
   #   # parallelization is carried out internally
   #   valueIndex2D(tsl = ts, dates = dates, index.code = index.code,
@@ -250,7 +252,8 @@ valueIndexXD <- function(ts = NULL,
     parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
     mapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "mapply")
     if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-    mapply_fun(valueIndex1D, ts, dates, MoreArgs = c(list(index.codes = index.code), index.arg.list))
+    args.list <- list(FUN = valueIndex1D, ts, MoreArgs = c(list(index.codes = index.code), index.arg.list))
+    do.call("mapply_fun", args.list)
   # }
 }
 #end

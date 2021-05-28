@@ -5,14 +5,14 @@
 \title{VALUE measure calculation for climate4R grids}
 \usage{
 valueIndex(
-  grid = NULL,
-  index.code = NULL,
+  grid,
+  index.code,
   return.NApercentage = FALSE,
   ...,
   parallel = FALSE,
   max.ncores = 16,
-  condition = NULL,
-  threshold = NULL,
+  con = NULL,
+  th = NULL,
   which.wetdays = NULL,
   ncores = NULL
 )
@@ -30,17 +30,17 @@ valueIndex(
 
 \item{max.ncores}{Integer. Upper bound for user-defined number of cores.}
 
-\item{condition}{Inequality operator to be applied to the given \code{"threshold"}. Only the days that satisfy the condition will be used for validation the model.
-\code{"GT"} = greater than the value of \code{threshold}, \code{"GE"} = greater or equal,
-\code{"LT"} = lower than, \code{"LE"} = lower or equal than.}
-
-\item{threshold}{Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{condition}. Then condition is set to \code{"GE"}.}
+\item{th}{Numeric value. Threshold used as reference for the condition. Default is NULL. If a threshold value is supplied with no specificaction of the argument \code{th}. Then condition is set to \code{"GE"}.}
 
 \item{which.wetdays}{A string, default to NULL. Infer the measure/index taking into account only the wet days of the temporal serie. 
 In this case, set which.wetdays = "Independent".}
 
 \item{ncores}{Integer number of cores used in parallel computation. Self-selected number of
 cores is used when \code{ncpus = NULL} (the default), or when \code{maxcores} exceeds the default \code{ncores} value.}
+
+\item{cond}{Inequality operator to be applied to the given \code{"th"}. Only the days that satisfy the condition will be used for validation the model.
+\code{"GT"} = greater than the value of \code{th}, \code{"GE"} = greater or equal,
+\code{"LT"} = lower than, \code{"LE"} = lower or equal than.}
 }
 \value{
 A grid of the index or a list containing the grid of the index and the 
