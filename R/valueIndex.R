@@ -51,20 +51,20 @@ valueIndex <- function(grid,
                        ...,
                        parallel = FALSE,
                        max.ncores = 16,
-                       con = NULL, 
+                       cond = NULL, 
                        th = NULL,
                        which.wetdays = NULL,
                        ncores = NULL){
   index.arg.list <- list(...)
   if (is.null(index.code) || length(index.code) > 1) stop("Please provide a single index.code.")
-  if (!is.null(th) & is.null(con)) con = "GE"
-  if (!is.null(th) & !is.null(con) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
+  if (!is.null(th) & is.null(cond)) cond = "GE"
+  if (!is.null(th) & !is.null(cond) & is.null(which.wetdays)) stop("Please select the wet days subset with the which.wetdays parameter.")
   if (!is.null(which.wetdays)) { 
     if (which.wetdays != "Independent") stop("The only valid which.wetdays value is 'Independent' ")
   }
-  if (!is.null(con)) {
+  if (!is.null(cond)) {
     if (is.null(th)) stop("Please specify the threshold value with parameter 'threshold'")
-    ineq <- switch(con,
+    ineq <- switch(cond,
                    "GT" = ">",
                    "GE" = ">=",
                    "LT" = "<",
