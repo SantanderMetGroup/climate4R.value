@@ -64,7 +64,7 @@ valueIndex <- function(grid,
   }
   if (!is.null(con)) {
     if (is.null(th)) stop("Please specify the threshold value with parameter 'threshold'")
-    ineq <- switch(cond,
+    ineq <- switch(con,
                    "GT" = ">",
                    "GE" = ">=",
                    "LT" = "<",
@@ -251,7 +251,7 @@ valueIndexXD <- function(ts = NULL,
     parallel.pars <- parallelCheck(parallel, max.ncores, ncores)
     mapply_fun <- selectPar.pplyFun(parallel.pars, .pplyFUN = "mapply")
     if (parallel.pars$hasparallel) on.exit(parallel::stopCluster(parallel.pars$cl))
-    args.list <- list(FUN = valueIndex1D, ts, MoreArgs = c(list(index.codes = index.code), index.arg.list))
+    args.list <- list(FUN = valueIndex1D, ts, MoreArgs = c(list(index.codes = index.code, dates = dates), index.arg.list))
     do.call("mapply_fun", args.list)
   # }
 }
