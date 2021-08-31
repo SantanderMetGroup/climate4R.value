@@ -48,6 +48,8 @@ VALUE measure calculation for climate4R grids
 }
 \examples{
 library(transformeR)
+require(climate4R.datasets)
+data(EOBS_Iberia_tas)
 y <- EOBS_Iberia_tas
 m <- valueIndex(y, "mean")
 str(m$Index)
