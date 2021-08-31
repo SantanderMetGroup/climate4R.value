@@ -26,4 +26,4 @@ Description: Wrapper of package VALUE to compute several indices and
     action VALUE <http://www.value-cost.eu/>.
 License: file LICENSE
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0

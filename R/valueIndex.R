@@ -37,6 +37,8 @@
 #' @export
 #' @examples 
 #' library(transformeR)
+#' require(climate4R.datasets)
+#' data(EOBS_Iberia_tas)
 #' y <- EOBS_Iberia_tas
 #' m <- valueIndex(y, "mean")
 #' str(m$Index)
@@ -67,8 +69,9 @@ valueIndex <- function(grid = NULL, index.code = NULL,
   station <- FALSE
   if ("loc" %in% getDim(grid)) station <- TRUE
   xy <- grid$xyCoords
-  dimNames <- attr(grid$Data, "dimensions")
   grid <- redim(grid, drop = TRUE)
+  grid <- redim(grid, member = FALSE)
+  dimNames <- attr(grid$Data, "dimensions")
   grid <- redim(grid, member = TRUE, runtime = TRUE)
   out <- grid
   n.run <- getShape(grid)["runtime"]
@@ -129,8 +132,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
       if (is.matrix(idx)){
         if (is.null(attributes(idx)$dimnames.names)) attr(idx, "dimnames.names") <- c("loc", "loc")
         tbr <- list(idx = idx, na.mat = na.mat)
-      }
-      else{
+      } else{
         idx <- abind(idx, along = 0)
         if (!station) idx <- mat2Dto3Darray(idx, xy$x, xy$y)
         if (!station) na.mat <- mat2Dto3Darray(na.mat, xy$x, xy$y)
@@ -141,7 +143,8 @@ valueIndex <- function(grid = NULL, index.code = NULL,
     tbr <-
       list(idx = unname(do.call("abind", list(lapply(memarr, "[[", 1), along = 0))),
            na = unname(do.call("abind", list(lapply(memarr, "[[", 2), along = 0))))
-    if (!is.null(attributes(memarr[[1]]$idx)$dimnames.names)){
+    
+    if (!is.null(attributes(memarr[[1]]$idx)$dimnames.names)) {
       attr(tbr, "dimnames.names") <- 
         attributes(memarr[[1]]$idx)$dimnames.names
     }
@@ -150,7 +153,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
 
   if (return.NApercentage) out.na <- out
   
-  if (show.indices(index.code = index.code)[1,"SPATIAL"]){
+  if (show.indices(index.code = index.code)[1,"SPATIAL"]) {
     dimnames.names <- attributes(runarr[[1]])$dimnames.names
     out$Data <- unname(do.call("abind", list(lapply(runarr, "[[", 1), along = 0)))
     

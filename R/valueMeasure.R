@@ -196,6 +196,8 @@ valueMeasure <- function(y, x,
   out.na$Variable$varName <- "NApercentage"
   out <- redim(out, drop = TRUE)
   out.na <- redim(out.na, drop = TRUE)
+  out <- redim(out, member = FALSE)
+  out.na <- redim(out.na, member = FALSE)
   message("[", Sys.time(), "] Done.")
   if (return.NApercentage) {
     if (any(c("biasCirc", "bias", "biasRel", "ratio") %in% measure.code)) { 

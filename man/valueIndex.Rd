@@ -4,15 +4,22 @@
 \alias{valueIndex}
 \title{VALUE measure calculation for climate4R grids}
 \usage{
-valueIndex(grid = NULL, index.code = NULL,
-  return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
-  condition = NULL, threshold = NULL, which.wetdays = NULL,
-  ncores = NULL)
+valueIndex(
+  grid = NULL,
+  index.code = NULL,
+  return.NApercentage = TRUE,
+  parallel = FALSE,
+  max.ncores = 16,
+  condition = NULL,
+  threshold = NULL,
+  which.wetdays = NULL,
+  ncores = NULL
+)
 }
 \arguments{
 \item{grid}{Grid (also station data) of observations}
 
-\item{index.code}{Characher of the index code to be computed (use VALUE::show.indices).}
+\item{index.code}{Character of the index code to be computed (use VALUE::show.indices).}
 
 \item{return.NApercentage}{Logical to also return or not a grid containing NA percentage information.}
 

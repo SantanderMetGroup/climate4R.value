@@ -4,10 +4,19 @@
 \alias{valueMeasure}
 \title{VALUE measure calculation for climate4R grids}
 \usage{
-valueMeasure(y, x, measure.code, index.code = NULL,
-  return.NApercentage = TRUE, parallel = FALSE, max.ncores = 16,
-  condition = NULL, threshold = NULL, which.wetdays = NULL,
-  ncores = NULL)
+valueMeasure(
+  y,
+  x,
+  measure.code,
+  index.code = NULL,
+  return.NApercentage = TRUE,
+  parallel = FALSE,
+  max.ncores = 16,
+  condition = NULL,
+  threshold = NULL,
+  which.wetdays = NULL,
+  ncores = NULL
+)
 }
 \arguments{
 \item{y}{Grid (also station data) of observations}
