@@ -2,7 +2,7 @@ Package: climate4R.value
 Depends:
     R (>= 3.6),
     VALUE (>= 2.2.2),
-    transformeR (>= 2.1.2)
+    transformeR (>= 2.1.1)
 Imports:
     abind
 Suggests:
