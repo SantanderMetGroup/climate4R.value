@@ -195,6 +195,7 @@ valueIndex <- function(grid = NULL, index.code = NULL,
     if (station) out <- redim(out, loc = TRUE)
     out$Variable$varName <- index.code
     out <- redim(out, drop = TRUE)
+    if (sum(dim(out$Data) == 1)) attr(out$Data, "dimensions") <- "time"
   }
   message("[", Sys.time(), "] Done.")
   

@@ -92,10 +92,11 @@ valueMeasure <- function(y, x,
                    "LE" = "<=")
   }
 
-  ix <- redim(ix, drop = TRUE)
-  y <- redim(y, drop = TRUE)
+  # ix <- redim(ix, drop = TRUE)
+  # y <- redim(y, drop = TRUE)
   y <- redim(y, member = FALSE, runtime = FALSE)
   ix <- redim(ix, member = TRUE, runtime = TRUE)
+  
   out <- ix
   n.run <- getShape(ix)["runtime"]
   n.mem <- getShape(ix)["member"]
@@ -199,6 +200,8 @@ valueMeasure <- function(y, x,
   out.na$Variable$varName <- "NApercentage"
   out <- redim(out, drop = TRUE)
   out.na <- redim(out.na, drop = TRUE)
+  if (sum(dim(out$Data) == 1)) attr(out$Data, "dimensions") <- "time"
+  if (sum(dim(out.na$Data) == 1)) attr(out.na$Data, "dimensions") <- "time"
   out <- redim(out, member = FALSE)
   out.na <- redim(out.na, member = FALSE)
   message("[", Sys.time(), "] Done.")
