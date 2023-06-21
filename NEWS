@@ -11,3 +11,7 @@
 ## v1.0.0 (31 Aug 2021)
 * Bug fixes and documentation updates
 * Update versions of the dependencies
+
+## v1.0.1 (21 Jun 2023)
+* Downgrade transformer dependency
+* Implementarions for dealing with 1 dimension arrays in grid$Data
